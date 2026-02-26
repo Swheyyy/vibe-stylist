@@ -11,7 +11,8 @@ from werkzeug.utils import secure_filename
 
 from color_engine.analyzer import build_color_profile
 from color_engine.extractor import extract_skin_lab
-from color_engine.groq_generator import generate_palettes
+from color_engine.groq_generator import generate_style_package
+from color_engine.shopping_links import generate_shopping_links
 
 load_dotenv()
 
@@ -67,10 +68,12 @@ def _save_uploaded_image(file_storage: Any) -> Path:
 def _analyze_image(image_path: Path, context: dict[str, Any]) -> dict[str, Any]:
     lab_values = extract_skin_lab(str(image_path))
     profile = build_color_profile(lab_values)
-    palettes = generate_palettes(profile, context=context)
+    style_package = generate_style_package(profile, context=context)
+    shopping_links = generate_shopping_links(profile, context)
     return {
         "profile": profile,
-        "palettes": palettes,
+        "style_package": style_package,
+        "shopping_links": shopping_links,
         "image_path": str(image_path),
     }
 
@@ -118,7 +121,9 @@ def index():
     return render_template(
         "result.html",
         profile=result["profile"],
-        palettes=result["palettes"],
+        palettes=result["style_package"],
+        style_guidance=result["style_package"].get("style_guidance", {}),
+        shopping_links=result["shopping_links"],
         context=context,
     )
 
@@ -140,7 +145,9 @@ def analyze_api():
         {
             "status": "ok",
             "profile": result["profile"],
-            "palette_recommendations": result["palettes"],
+            "palette_recommendations": result["style_package"],
+            "style_guidance": result["style_package"].get("style_guidance", {}),
+            "shopping_links": result["shopping_links"],
             "input_context": context,
         }
     )

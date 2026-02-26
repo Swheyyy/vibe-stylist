@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from color_engine.groq_generator import generate_palettes
+from color_engine.groq_generator import generate_style_package
 
 
 class GroqGeneratorTests(unittest.TestCase):
@@ -9,12 +9,14 @@ class GroqGeneratorTests(unittest.TestCase):
         profile = {"undertone": "warm", "contrast": "medium", "skin_L": 150.0}
 
         with patch("color_engine.groq_generator._groq_client", side_effect=RuntimeError("no key")):
-            payload = generate_palettes(profile, context={"mood": "bold"})
+            payload = generate_style_package(profile, context={"mood": "bold", "gender": "female"})
 
         self.assertIn("summary", payload)
         self.assertIn("palettes", payload)
         self.assertEqual(len(payload["palettes"]), 3)
         self.assertIn("Fallback", payload["summary"])
+        self.assertIn("style_guidance", payload)
+        self.assertEqual(len(payload["style_guidance"]["dress_codes"]), 4)
 
 
 if __name__ == "__main__":

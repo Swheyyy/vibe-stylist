@@ -49,6 +49,51 @@
     </ul>
   {% endif %}
 
+  <h2>Gender-Specific Style Guidance</h2>
+  {% if style_guidance %}
+    <p><strong>Alignment:</strong> {{ style_guidance.gender_alignment_note }}</p>
+
+    <h3>Dress Codes</h3>
+    {% for code in style_guidance.dress_codes %}
+      <p><strong>{{ code.code | capitalize }}</strong></p>
+      <p>Top: {{ code.top }}</p>
+      <p>Bottom: {{ code.bottom }}</p>
+      <p>Shoes: {{ code.shoes }}</p>
+      <p>{{ code.why }}</p>
+    {% endfor %}
+
+    <h3>Hairstyle</h3>
+    <p>{{ style_guidance.hairstyle.recommendation }}</p>
+    <p><strong>Maintenance:</strong> {{ style_guidance.hairstyle.maintenance_tip }}</p>
+
+    <h3>Accessories</h3>
+    <ul>
+      {% for item in style_guidance.accessories %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No style guidance available.</p>
+  {% endif %}
+
+  <h2>Curated Shopping Links</h2>
+  {% if shopping_links %}
+    <p>{{ shopping_links.note }}</p>
+    {% for category, items in shopping_links.categories.items() %}
+      <h3>{{ category | capitalize }}</h3>
+      <ul>
+        {% for item in items %}
+        <li>
+          <strong>{{ item.retailer }}:</strong>
+          <a href="{{ item.url }}" target="_blank" rel="noopener noreferrer">{{ item.label }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  {% else %}
+    <p>No shopping links available.</p>
+  {% endif %}
+
   <a href="/">Go Back</a>
 </body>
 </html>
