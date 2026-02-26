@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe Stylist - Result</title>
+</head>
+<body>
+  <h1>Campus Style Analysis</h1>
+  <h2>Your Color Profile</h2>
+  <p><strong>Skin Tone Bucket:</strong> {{ profile.skin_tone_bucket }}</p>
+  <p><strong>Undertone:</strong> {{ profile.undertone }} (confidence: {{ profile.confidence.undertone }})</p>
+  <p><strong>Contrast:</strong> {{ profile.contrast }} (confidence: {{ profile.confidence.contrast }})</p>
+  <p><strong>LAB Mean:</strong> L={{ profile.skin_lab.L }}, A={{ profile.skin_lab.A }}, B={{ profile.skin_lab.B }}</p>
+  <p><strong>Extraction:</strong> {{ profile.diagnostics.extraction_method }} | Face detected: {{ profile.diagnostics.face_detected }}</p>
+  {% if profile.diagnostics.quality_flags %}
+  <p><strong>Quality Flags:</strong> {{ profile.diagnostics.quality_flags|join(", ") }}</p>
+  {% endif %}
+
+  <h2>User Context</h2>
+  <p><strong>Segment:</strong> {{ context.user_segment or "not_provided" }}</p>
+  <p><strong>Gender:</strong> {{ context.gender or "not_provided" }}</p>
+  <p><strong>Mood:</strong> {{ context.mood or "not_provided" }}</p>
+  <p><strong>Occasion:</strong> {{ context.occasion or "not_provided" }}</p>
+  <p><strong>Campus Style:</strong> {{ context.campus_style or "not_provided" }}</p>
+  <p><strong>Budget Tier:</strong> {{ context.budget_tier or "not_provided" }}</p>
+  <p><strong>Student Year:</strong> {{ context.student_year or "not_provided" }}</p>
+  <p><strong>Season:</strong> {{ context.season or "not_provided" }}</p>
+
+  <h2>Recommended Palettes</h2>
+  <p>{{ palettes.summary }}</p>
+
+  {% for palette in palettes.palettes %}
+    <h3>{{ loop.index }}. {{ palette.name }}</h3>
+    <p>Primary: {{ palette.primary }} ({{ palette.hex.primary }})</p>
+    <p>Secondary: {{ palette.secondary }} ({{ palette.hex.secondary }})</p>
+    <p>Accent: {{ palette.accent }} ({{ palette.hex.accent }})</p>
+    <p><strong>Campus Fit:</strong> {{ palette.campus_fit }}</p>
+    <p><strong>Budget Tip:</strong> {{ palette.affordability_tip }}</p>
+    <p>{{ palette.why_it_works }}</p>
+  {% endfor %}
+
+  {% if palettes.styling_notes %}
+    <h3>Styling Notes</h3>
+    <ul>
+      {% for note in palettes.styling_notes %}
+      <li>{{ note }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <a href="/">Go Back</a>
+</body>
+</html>
